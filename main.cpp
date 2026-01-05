@@ -28,6 +28,7 @@ int main() {
 
     while (true)
     {
+        std::cout<<"\nBuget disponibil: "<<clienta.getBuget()<<" RON";
         std::cout<<"\n 1.Cumpara | 2.Consultant Beauty | 3.Vezi cos | 0.Exit \n Alege: ";
         std::cin>>optiune;
         std::cout<<optiune<<"\n";
@@ -62,6 +63,9 @@ int main() {
                    Skincare* s = dynamic_cast<Skincare*>(p);
                    if (s&& s->getTipTen()==tipCautat)
                    {
+                       Crema* cPtr = dynamic_cast<Crema*>(s);
+                       if (cPtr) cPtr->aplica();
+
                        std::cout<<"Consultantul recomanda: "<<*s<<"\n";
                        recomandareCurenta = p;
                        gasit = true;
@@ -80,11 +84,10 @@ int main() {
            }
        } catch (const ErroareBuget& e)
        {
-           std::cout<<"FONDURI INSUFICIENTE";
+           std::cout<<"FONDURI INSUFICIENTE"<<e.what()<<"\n";
        }
     }
-
-
-
+    stocProduse.curata();
+    std::cout<<"Total produse verificate astazi: "<<ProdusCosmetic::getNrTotalProduse()<<"\n";
     return 0;
 }

@@ -9,7 +9,7 @@ class ProdusCosmetic
 protected:
     std::string nume;
     float pret;
-    static int nrProduse;
+    static int nrTotalProduse;
 public:
     ProdusCosmetic( const std::string& nume, float pret);
     virtual ~ProdusCosmetic();
@@ -19,7 +19,7 @@ public:
 
     static int getNrTotalProduse()
     {
-        return nrProduse;
+        return nrTotalProduse;
     }
 
     std::string getNume() const

@@ -1,12 +1,16 @@
 #ifndef GESTIUNE_H
 #define GESTIUNE_H
-
+#include<vector>
 template <typename T>
 class Gestiune
 {
 private:
     std::vector<T> lista;
 public:
+    ~Gestiune()
+    {
+        curata();
+    }
     void adauga(T element)
     {
         lista.push_back(element);
@@ -17,7 +21,10 @@ public:
     }
     void curata()
     {
-        for (auto e: lista) delete e;
+        for (auto e: lista)
+        {
+            delete e;
+        }
         lista.clear();
     }
 };

@@ -1,21 +1,18 @@
 #include "Produse.h"
 
-// cppcheck-suppress unusedFunction
-int ProdusCosmetic::nrProduse = 0;
+int ProdusCosmetic::nrTotalProduse = 0;
 
 ProdusCosmetic::ProdusCosmetic(const std::string& nume, float pret): nume(nume), pret(pret)
 {
-    nrProduse++;
+    nrTotalProduse++;
 }
 
-ProdusCosmetic::~ProdusCosmetic()
-{
-    nrProduse--;
-}
+ProdusCosmetic::~ProdusCosmetic(){}
+
 
 ProdusCosmetic::ProdusCosmetic(const ProdusCosmetic& altProd): nume(altProd.nume), pret(altProd.pret)
 {
-    nrProduse++;
+    nrTotalProduse++;
 }
 
 ProdusCosmetic& ProdusCosmetic::operator=(const ProdusCosmetic& altProd)
