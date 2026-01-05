@@ -21,7 +21,7 @@ int main() {
     f.close();
 
     Client clienta("Maria", 150.0);
-    ProdusCosmetic* recomandareCurenta = nullptr;
+    const ProdusCosmetic* recomandareCurenta = nullptr;
     int optiune;
 
     std::cout<<"---BINE ATI VENIT LA MAGAZINUL NOSTRU---\n";

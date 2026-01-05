@@ -22,7 +22,7 @@ public:
         return nrTotalProduse;
     }
 
-    std::string getNume() const
+    const std::string& getNume() const
     {
         return nume;
     }
@@ -45,7 +45,7 @@ protected:
 public:
     Skincare(const std::string& nume, float pret, const std::string& ten);
     void afisare(std::ostream& os) const override;
-    std::string getTipTen() const { return  tipTen; }
+    const std::string getTipTen() const { return  tipTen; }
 };
 
 class Crema : public Skincare

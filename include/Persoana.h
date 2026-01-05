@@ -40,7 +40,7 @@ public:
         return buget;
     }
 
-    std::string getNume() const
+    const std::string& getNume() const
     {
         return nume;
     }
