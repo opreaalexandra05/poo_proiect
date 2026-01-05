@@ -1,0 +1,5 @@
+4
+Crema_Hidratanta 45.0 Uscat 30
+Ser_Purifiant 60.0 Gras 0
+Lotiune_Echilibranta 55.0 Mixt 15
+Gel_calmant 40.0 Sensibil 0p
