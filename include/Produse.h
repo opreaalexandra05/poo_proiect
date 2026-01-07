@@ -29,7 +29,7 @@ public:
     }
 
     virtual void afisare(std::ostream& os) const;
-    virtual void aplica() = 0;
+    virtual void aplica() const = 0;
 
 
 };
@@ -41,6 +41,7 @@ protected:
 
 public:
     Skincare(const std::string& nume, float pret, const std::string& ten);
+    void aplica() const override = 0;
     void afisare(std::ostream& os) const override;
     const std::string& getTipTen() const { return  tipTen; }
 };
@@ -51,14 +52,14 @@ protected:
     float spf;
 public:
     Crema(const std::string& nume, float pret, const std::string& ten, float spf);
-    void aplica() override;
+    void aplica() const override;
     void afisare(std::ostream& os) const override;
 };
 
 class ProdusFactory
 {
 public:
-    static ProdusCosmetic* creeazaCrema(std::string nume, float pret, std::string ten, float spf)
+    static ProdusCosmetic* creeazaCrema(const std::string& nume, float pret, const std::string& ten, float spf)
     {
        return new Crema(nume, pret, ten, spf);
     }

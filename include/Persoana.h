@@ -29,9 +29,9 @@ class Persoana
 protected:
     std::string nume;
 public:
-    Persoana(std::string n): nume(n) {}
+    Persoana(const std::string& n): nume(n) {}
     virtual ~Persoana(){}
-    std::string getNume() const
+    const std::string& getNume() const
     {
         return nume;
     }
@@ -43,7 +43,7 @@ class Client: public Persoana
 private:
     float buget;
 public:
-    Client(std::string n, float b): Persoana(n), buget(b){}
+    Client(const std::string& n, float b): Persoana(n), buget(b){}
     void afiseazaRol() const override {std::cout <<"Rol: Client | Nume: "<<nume<<"\n";}
     float getBuget() const
     {

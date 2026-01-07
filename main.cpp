@@ -10,6 +10,8 @@ int main() {
     Gestiune<ProdusCosmetic*> magazin;
     Gestiune<int> logCoduri;
 
+    MagazinManager* manager = MagazinManager::getInstanta();
+    std::cout<<"[SISTEM] Obiecte inregistrate initial: "<< ProdusCosmetic::getNrTotalProduse() << "\n";
 
     std::ifstream fStoc("produse_stoc.txt");
     int n;
@@ -41,15 +43,16 @@ int main() {
     int optiune = -1;
     while (optiune != 0)
     {
-        MagazinManager::afiseazaMeniu();
+        manager->afiseazaMeniu();
         if (!(fTastatura>>optiune)) break;
+        logCoduri.adauga(optiune);
         std::cout<< optiune << "\n";
 
         switch (optiune)
         {
         case 1:
             std::cout<<"\n--- LISTA PRODUSE ---\n";
-            for (auto p: magazin.getToate())
+            for (const auto* p: magazin.getToate())
             {
                 std::cout<<*p<<"\n";
             }
@@ -59,8 +62,9 @@ int main() {
             {
                 if (!magazin.getToate().empty())
                 {
-                    ProdusCosmetic* p = magazin.getToate()[0];
+                    const ProdusCosmetic* p = magazin.getToate()[0];
                     std::cout<<"\n[CUMPARARE] "<<c.getNume()<<" a ales: "<<p->getNume()<<"("<<p->getPret()<<" RON) \n";
+                    p->aplica();
                     c-= p->getPret();
 
                     std::cout<<"[INFO] Tranzactie reusita pentru "<<c.getNume()<<".\n";
@@ -77,7 +81,7 @@ int main() {
                 std::set<std::string> categoriiTen;
                 for (auto p: magazin.getToate())
                 {
-                    if (Skincare* s = dynamic_cast<Skincare*>(p))
+                    if (const Skincare* s = dynamic_cast<const Skincare*>(p))
                     {
                         categoriiTen.insert(s->getTipTen());
                     }
@@ -95,6 +99,8 @@ int main() {
             break;
         }
     }
+    std::cout<<"\n[SISTEM] Istoric comenzi procesate: ";
+    for (int cod: logCoduri.getToate()) std::cout<<cod<<" ";
     fTastatura.close();
 
     for (auto p: magazin.getToate()) delete p;

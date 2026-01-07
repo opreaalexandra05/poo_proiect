@@ -45,7 +45,7 @@ void Skincare::afisare(std::ostream& os) const
 
 Crema:: Crema(const std::string& nume, float pret, const std::string& ten, float spf): Skincare(nume, pret, ten), spf(spf){}
 
-void Crema::aplica()
+void Crema::aplica() const
 {
     std::cout<< "Se aplica crema cu SPF "<<spf<<"prin masaj circular. \n";
 }
