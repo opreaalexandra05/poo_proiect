@@ -1,84 +1,49 @@
-# Beauty & Skincare Manager
+# Sistem de Gestiune Produse Cosmetice (Cosmetic Management System)
 
-### Sistem de gestiune și consultanță cosmetică implementat în C++
+## 1. Descrierea Proiectului
 
-Acest proiect reprezintă o aplicație modulară pentru administrarea unui portofoliu de produse de îngrijire a tenului și simularea procesului de achiziție pentru clienți. Programul pune accent pe recomandări personalizate bazate pe tipul de ten și demonstrează utilizarea avansată a conceptelor de Programare Orientată pe Obiecte (POO).
+Acest proiect reprezintă o aplicație de gestiune pentru un magazin de produse cosmetice, dezvoltată în C++ utilizând principiile programării orientate pe obiect (POO). Sistemul permite administrarea unui stoc de produse (creme, seruri etc.), gestionarea bugetului clienților și procesarea tranzacțiilor.
 
-## Arhitectura Claselor și Ierarhia POO
+## 2. Caracteristici Tehnice (Cerințe Implementate)
 
-A. Ierarhia Produselor
+### A. Ierarhia de Clase și Polimorfism
+-> Clasa de Bază Abstractă: ProdusCosmetic – definește interfața comună (metoda virtuală pură aplica()).
 
-Sistemul utilizează moștenirea pentru a modela specializarea produselor:
+-> Clase Derivate:
 
--> ProdusCosmetic (Clasa de bază): Este o clasă abstractă. Aceasta forțează toate produsele să aibă un nume și un preț, dar lasă implementarea metodei aplica() pe seama claselor derivate (prin conceptul de interfață).
+~ Skincare (moștenește ProdusCosmetic) – adaugă atribute specifice precum tipTen.
 
--> Skincare (Clasă intermediară): Extinde proprietățile de bază prin adăugarea atributului tipTen. Aceasta servește drept punte pentru toate produsele destinate îngrijirii tenului.
+~ Crema (moștenește Skincare) – implementează metoda aplica(), demonstrând polimorfismul la rulare.
 
--> Crema (Clasă concretă): Reprezintă un produs final care adaugă atributul spf. Aici se implementează logica specifică de utilizare a produsului.
+### B. Design Patterns
+-> Singleton Pattern: Clasa MagazinManager – asigură existența unei singure instanțe care gestionează meniul și fluxul aplicației.
 
-B. Modulul de Clienți (Persoana.h)
+-> Factory Pattern: Clasa ProdusFactory – centralizează logica de creare a obiectelor, oferind o metodă statică pentru instanțierea produselor fără a expune logica de construcție direct în main.
 
-Clasa Client gestionează starea utilizatorului. Aceasta include:
+### C. Programare Generică (Templates)
+-> Clasa Template Gestiune<T>: Utilizată pentru a stoca diferite tipuri de date (obiecte de tip ProdusCosmetic* pentru magazin și tipuri primitive int pentru log-ul de comenzi).
 
--> Încapsularea: Bugetul este privat, putând fi modificat doar prin metoda cumparaProdus, care verifică validitatea tranzacției.
+-> Specializarea Template-ului: Implementarea de logici diferite pentru metodele curata() și numaraProduseCuProtectie() în funcție de tipul de date stocat (pointeri vs. întregi), asigurând compatibilitate și eficiență.
 
--> Istoric: Folosește un std::vector<std::string> pentru a memora cronologic achizițiile.
+### D. Gestiunea Memoriei și Siguranță
+-> Gestionarea riguroasă a constantelor: Utilizarea extinsă a cuvântului cheie const pentru metode, parametri (referințe constante) și pointeri, garantând integritatea datelor.
 
-## Concepte avansate implementate
+-> Gestiunea dinamică: Alocarea obiectelor cu new și eliberarea riguroasă a acestora prin metoda curata(), verificată prin tool-uri de analiză (Valgrind) pentru a preveni memory leak-urile.
 
-### I. Polimorfism la Runtime
+### E. Operatori și Excepții
+-> Supraîncărcarea Operatorilor:
 
-Datorită clasei abstracte, putem folosi Polimorfismul. În clasa Gestiune, avem un std::vector<ProdusCosmetic*>. Chiar dacă vectorul conține pointeri la clasa de bază, programul apelează versiunea corectă a funcțiilor (de exemplu, afisare sau aplica) pentru fiecare obiect în parte (Cremă, etc.).
+~ operator<< pentru afișarea polimorfică a produselor.
 
-### II. Programare Generică (Templates)
+~ operator>> pentru citirea datelor clientului.
 
-Clasa Gestiune<T> este un motor generic de stocare.
+~ operator-= pentru actualizarea bugetului clientului.
 
-Avantaj: Poate gestiona orice tip de obiect.
+-> Tratarea Excepțiilor: Utilizarea blocurilor try-catch și a unei clase custom ErroareMagazin (derivată din std::exception) pentru a gestiona situații precum bugetul insuficient.
 
-Curățarea Memoriei: Include un mecanism automat de tip "Garbage Collection" manual prin metoda curata(), care șterge pointerii pentru a evita pierderile de memorie.
+## 3. Fluxul Aplicației
+-> Inițializare: Se încarcă stocul de produse dintr-un fișier extern (produse_stoc.txt) și se afișează numărul de obiecte create prin variabila statică nrTotalProduse.
 
-### III. RTTI și Dynamic Cast
+-> Interacțiune: Utilizatorul (Clientul) poate vedea stocul, cumpăra produse sau vizualiza statistici (ex: tipuri de ten identificate prin dynamic_cast).
 
-În modulul de consultanță, folosim dynamic_cast<Skincare*>(p) pentru a verifica dacă un produs generic are proprietăți de îngrijire a tenului. Dacă cast-ul reușește, putem accesa metode specifice (ca getTipTen()), care nu există în clasa de bază abstractă.
-
-### IV. Tratarea Erourilor (Excepții)
-
-Am implementat clasa ErroareBuget, derivată din std::exception.
-
-Sistemul aruncă (throw) o excepție dacă prețul produsului depășește bugetul clientului.
-
-Logica este izolată într-un bloc try-catch, asigurând o experiență de utilizare fluidă fără prăbușirea programului.
-
-
-## Detalii de implementare
-
-### Operatorul << (Non-membru)
-
-Am ales să supraîncarc operator<< ca funcție non-membră pentru a respecta convenția standard C++, permițând sintaxa std::cout << *produs. Aceasta apelează intern metoda virtuală afisare, combinând astfel supraîncărcarea cu polimorfismul.
-
-### Rule of Three
-
-Clasa ProdusCosmetic implementează:
-
-~ Destructor Virtual: Esențial pentru curățarea corectă a obiectelor derivate.
-
-~ Constructor de Copiere: Garantează că la copierea unui produs, datele sunt transferate corect.
-
-~ Operator de Atribuire (operator=): Previne auto-atribuirea și gestionează copierea valorilor.
-
-## Detalii de gestiune a memoriei 
-
-### -> Destructor Virtual: 
-Clasa abstractă ProdusCosmetic are un destructor virtual. Acest lucru este vital: când ștergem un pointer de tip ProdusCosmetic* care arată către o Crema, destructorul virtual asigură că toate resursele sunt eliberate corect, începând de la clasa derivată spre cea de bază.
-
-### -> Membri Statici: 
-Variabila nrTotalProduse (static) monitorizează volumul de date procesat pe parcursul sesiunii, fiind independentă de instanțele individuale.
-
-## Exemplu de flux de date
-
-Input: Programul citește n produse din produse_stoc.txt.
-
-Procesare: Consultantul filtrează stocul comparând tipTen din obiectul de tip Skincare cu input-ul utilizatorului.
-
-Output: Se afișează recomandarea, se scade prețul din buget și se actualizează istoricul.
+-> Finalizare: Se afișează istoricul comenzilor folosind clasa template și se eliberează memoria.
