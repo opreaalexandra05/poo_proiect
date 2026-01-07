@@ -2,8 +2,8 @@
 #define GESTIUNE_H
 
 #include<vector>
-#include<algorithm>
 #include<iostream>
+#include "Produse.h"
 
 
 template <typename T>
@@ -12,7 +12,7 @@ class Gestiune
 private:
     std::vector<T> lista;
 public:
-    void adauga(T element)
+    void adauga(const T& element)
     {
         lista.push_back(element);
     }
@@ -20,20 +20,57 @@ public:
     {
         return lista;
     }
-    int numaraProduseCuProtectie(float pragSPF) const
-    {
-        return std::count_if(lista.begin(), lista.end(), [pragSPF](const T& p)
-        {
-            return p->getPret() > 0;
-        });
-    }
-    void curata()
-    {
-        lista.clear();
-    }
-
+    int numaraProduseCuProtectie(float pragSPF) const;
+    void curata();
 };
 
+template <>
+int Gestiune<int>::numaraProduseCuProtectie(float pragSPF) const
+{
+    int nr = 0;
+    for (size_t i = 0; i<lista.size(); ++i)
+    {
+        if ((float)lista[i] > pragSPF)
+        {
+            nr++;
+        }
+    }
+    return  nr;
+}
+
+template <>
+void Gestiune<int>::curata()
+{
+    lista.clear();
+}
+
+template <>
+int Gestiune<ProdusCosmetic*>::numaraProduseCuProtectie(float pragSPF) const
+{
+    int nr = 0;
+    for (size_t i = 0; i<lista.size(); ++i)
+    {
+        if (lista[i] != nullptr && lista[i]->getPret()>pragSPF)
+        {
+            nr++;
+        }
+    }
+    return nr;
+}
+
+template <>
+void Gestiune<ProdusCosmetic*>::curata()
+{
+    for (size_t i = 0; i<lista.size(); ++i)
+    {
+        if (lista[i] != nullptr)
+        {
+            delete lista[i];
+            lista[i] = nullptr;
+        }
+    }
+    lista.clear();
+}
 class MagazinManager
 {
 private:

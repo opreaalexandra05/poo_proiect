@@ -14,10 +14,10 @@ int main() {
     std::cout<<"[SISTEM] Obiecte inregistrate initial: "<< ProdusCosmetic::getNrTotalProduse() << "\n";
 
     std::ifstream fStoc("produse_stoc.txt");
-    int n;
-    if (fStoc>>n)
+    int nrProd;
+    if (fStoc>>nrProd)
     {
-        for (int i=0; i<n; ++i)
+        for (int i=0; i<nrProd; ++i)
         {
             std::string nume, ten;
             float pret, spf;
@@ -103,8 +103,8 @@ int main() {
     for (int cod: logCoduri.getToate()) std::cout<<cod<<" ";
     fTastatura.close();
 
-    for (const auto* p: magazin.getToate()) delete p;
     magazin.curata();
+    logCoduri.curata();
 
     return 0;
 }

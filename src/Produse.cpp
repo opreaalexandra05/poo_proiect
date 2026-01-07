@@ -47,7 +47,7 @@ Crema:: Crema(const std::string& nume, float pret, const std::string& ten, float
 
 void Crema::aplica() const
 {
-    std::cout<< "Se aplica crema cu SPF "<<spf<<"prin masaj circular. \n";
+    std::cout<< "Se aplica crema cu SPF "<<spf<<" prin masaj circular. \n";
 }
 
 void Crema::afisare(std::ostream& os) const
