@@ -17,10 +17,7 @@ public:
     ProdusCosmetic(const ProdusCosmetic& altProd);
     ProdusCosmetic& operator=(const ProdusCosmetic& altProd);
 
-    static int getNrTotalProduse()
-    {
-        return nrTotalProduse;
-    }
+    static int getNrTotalProduse();
 
     const std::string& getNume() const
     {
@@ -56,6 +53,15 @@ public:
     Crema(const std::string& nume, float pret, const std::string& ten, float spf);
     void aplica() override;
     void afisare(std::ostream& os) const override;
+};
+
+class ProdusFactory
+{
+public:
+    static ProdusCosmetic* creeazaCrema(std::string nume, float pret, std::string ten, float spf)
+    {
+       return new Crema(nume, pret, ten, spf);
+    }
 };
 
 std::ostream& operator<<(std::ostream& os, const ProdusCosmetic& p);

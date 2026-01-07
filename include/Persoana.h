@@ -6,54 +6,65 @@
 #include <iostream>
 #include <exception>
 
-class ErroareBuget: public std::exception
+class ErroareMagazin: public std::exception
+{
+public:
+    virtual const char* what() const throw() override
+    {
+        return "Eroare generala magazin!";
+    }
+};
+
+class ErroareBuget: public ErroareMagazin
 {
 public:
     const char* what() const throw() override
     {
-        return "Fonduri insuficiente!";
+        return "Fonduri insuficiente in contul clientului!";
     }
 };
 
-class Client
+class Persoana
+{
+protected:
+    std::string nume;
+public:
+    Persoana(std::string n): nume(n) {}
+    virtual ~Persoana(){}
+    std::string getNume() const
+    {
+        return nume;
+    }
+    virtual void afiseazaRol() const = 0;
+};
+
+class Client: public Persoana
 {
 private:
-    std::string nume;
     float buget;
-    std::vector<std::string> istoricCumparaturi;
 public:
-    Client(std::string numeClient, float bugetInitial): nume(numeClient), buget(bugetInitial){}
-
-    void cumparaProdus(std::string numeProdus, float pretProdus)
-    {
-        if (pretProdus > buget)
-        {
-            throw ErroareBuget();
-        }
-        buget -= pretProdus;
-        istoricCumparaturi.push_back(numeProdus);
-        std::cout<<"Felicitari! Ai cumparat: "<<numeProdus<<".Buget ramas: "<<buget<<" RON  \n";
-    }
-
+    Client(std::string n, float b): Persoana(n), buget(b){}
+    void afiseazaRol() const override {std::cout <<"Rol: Client | Nume: "<<nume<<"\n";}
     float getBuget() const
     {
         return buget;
     }
 
-    const std::string& getNume() const
+    Client& operator -=(float suma)
     {
-        return nume;
+        if (suma>buget) throw ErroareBuget();
+        buget-=suma;
+        return *this;
     }
 
-    void afiseazaIstoric() const
+    friend std::istream& operator >>(std::istream& is, Client& c)
     {
-        std::cout<<"Istoric cumparaturi pentru "<<nume<<": ";
-        for (const auto& prod : istoricCumparaturi)
-        {
-            std::cout<<prod<<" | ";
-        }
-        std::cout<<"\n";
+        is>>c.nume;
+        is>>c.buget;
+        return is;
     }
 };
+
+float operator+(const Client& c, float bonus);
 
 #endif //OOP_PERSOANA_H

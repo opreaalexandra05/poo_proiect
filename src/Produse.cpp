@@ -17,8 +17,17 @@ ProdusCosmetic::ProdusCosmetic(const ProdusCosmetic& altProd): nume(altProd.nume
 
 ProdusCosmetic& ProdusCosmetic::operator=(const ProdusCosmetic& altProd)
 {
-    if (this != &altProd){ nume= altProd.nume; pret= altProd.pret; }
+    if (this != &altProd)
+    {
+        nume= altProd.nume;
+        pret= altProd.pret;
+    }
     return *this;
+}
+
+int ProdusCosmetic::getNrTotalProduse()
+{
+    return nrTotalProduse;
 }
 
 void ProdusCosmetic::afisare(std::ostream& os) const
