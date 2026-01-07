@@ -1,93 +1,104 @@
 #include <iostream>
 #include <fstream>
+#include <set>
 #include "Produse.h"
 #include "Persoana.h"
 #include "Gestiune.h"
 
+MagazinManager* MagazinManager::instanta = nullptr;
 int main() {
-    Gestiune<ProdusCosmetic*> stocProduse;
-    std::ifstream f("produse_stoc.txt");
+    Gestiune<ProdusCosmetic*> magazin;
+    Gestiune<int> logCoduri;
+
+
+    std::ifstream fStoc("produse_stoc.txt");
     int n;
-    if (f>>n)
+    if (fStoc>>n)
     {
         for (int i=0; i<n; ++i)
         {
             std::string nume, ten;
             float pret, spf;
-            f>>nume>>pret>>ten>>spf;
-            stocProduse.adauga(new Crema(nume, pret, ten, spf));
+            fStoc>>nume>>pret>>ten>>spf;
+            magazin.adauga(ProdusFactory:: creeazaCrema(nume, pret, ten, spf));
         }
     }
-    f.close();
+    fStoc.close();
 
-    Client clienta("Maria", 150.0);
-    const ProdusCosmetic* recomandareCurenta = nullptr;
-    int optiune;
-
-    std::cout<<"---BINE ATI VENIT LA MAGAZINUL NOSTRU---\n";
-
-    while (true)
+    std::ifstream fTastatura("tastatura.txt");
+    if (!fTastatura)
     {
-        std::cout<<"\nBuget disponibil: "<<clienta.getBuget()<<" RON";
-        std::cout<<"\n 1.Cumpara | 2.Consultant Beauty | 3.Vezi cos | 0.Exit \n Alege: ";
-        std::cin>>optiune;
-        std::cout<<optiune<<"\n";
-        if (optiune==0)
+        std::cout<< "Eroare: Lipseste fisierul de intrare tastatura.txt!\n";
+        return 1;
+    }
+
+    Client c("", 0);
+    fTastatura >> c;
+    std::cout<< "\n=================================="<<std::endl;
+    c.afiseazaRol();
+    std::cout<<"\n Buget client: "<<c.getBuget()<<" RON"<< std::endl;
+
+    int optiune = -1;
+    while (optiune != 0)
+    {
+        MagazinManager::afiseazaMeniu();
+        if (!(fTastatura>>optiune)) break;
+        std::cout<< optiune << "\n";
+
+        switch (optiune)
         {
-           std::cout<<"Va multumim ca ati folosit serviciile noastre!\n";
+        case 1:
+            std::cout<<"\n--- LISTA PRODUSE ---\n";
+            for (auto p: magazin.getToate())
+            {
+                std::cout<<*p<<"\n";
+            }
+            break;
+        case 2:
+            try
+            {
+                if (!magazin.getToate().empty())
+                {
+                    ProdusCosmetic* p = magazin.getToate()[0];
+                    std::cout<<"\n[CUMPARARE] "<<c.getNume()<<" a ales: "<<p->getNume()<<"("<<p->getPret()<<" RON) \n";
+                    c-= p->getPret();
+
+                    std::cout<<"[INFO] Tranzactie reusita pentru "<<c.getNume()<<".\n";
+                    std::cout<<"[INFO] Buget actualizat: "<<c.getBuget()<<" RON\n";
+
+                }
+            } catch (const ErroareMagazin& e)
+            {
+                std::cout<<"FAIL!"<<c.getNume()<<" nu poate cumpara: "<<e.what()<<"\n";
+            }
+            break;
+        case 3:
+            {
+                std::set<std::string> categoriiTen;
+                for (auto p: magazin.getToate())
+                {
+                    if (Skincare* s = dynamic_cast<Skincare*>(p))
+                    {
+                        categoriiTen.insert(s->getTipTen());
+                    }
+                }
+                std::cout<<"\n Tipuri de ten identificate: ";
+                for (const auto& t: categoriiTen) std::cout<<"["<<t<<"]";
+                std::cout<<"\n";
+
+                int nr= magazin.numaraProduseCuProtectie(10.0);
+                std::cout<<"\n Produse peste 10 RON: "<<nr<<"\n";
+            }
+            break;
+        case 0:
+            std::cout<<"EXIT";
             break;
         }
-        try
-       {
-           if (optiune==1)
-           {
-               if (recomandareCurenta != nullptr)
-               {
-                   clienta.cumparaProdus(recomandareCurenta->getNume(), recomandareCurenta->getPret());
-                   recomandareCurenta = nullptr;
-               } else
-               {
-                   std::cout<<"Cereti alt sfat consultantului (optiunea 2) inainte de a cumpara! \n";
-               }
-           }
-           else if (optiune==2)
-           {
-               std::string tipCautat;
-               std::cout<<"Introduceti tipul de ten: ";
-               std::cin>>tipCautat;
-               std::cout<<tipCautat<<":\n";
-
-               bool gasit = false;
-               for (auto p: stocProduse.getToate())
-               {
-                   Skincare* s = dynamic_cast<Skincare*>(p);
-                   if (s&& s->getTipTen()==tipCautat)
-                   {
-                       Crema* cPtr = dynamic_cast<Crema*>(s);
-                       if (cPtr) cPtr->aplica();
-
-                       std::cout<<"Consultantul recomanda: "<<*s<<"\n";
-                       recomandareCurenta = p;
-                       gasit = true;
-                       break;
-                   }
-               }
-               if (!gasit)
-               {
-                   std::cout<<"Nu am gasit produse pentrul tenul dumneavoastra "<<tipCautat<<"\n";
-                   recomandareCurenta = nullptr;
-               }
-           }
-           else if (optiune==3)
-           {
-               clienta.afiseazaIstoric();
-           }
-       } catch (const ErroareBuget& e)
-       {
-           std::cout<<"FONDURI INSUFICIENTE"<<e.what()<<"\n";
-       }
     }
-    stocProduse.curata();
-    std::cout<<"Total produse verificate astazi: "<<ProdusCosmetic::getNrTotalProduse()<<"\n";
+    fTastatura.close();
+
+    for (auto p: magazin.getToate()) delete p;
+    magazin.curata();
+
     return 0;
 }
