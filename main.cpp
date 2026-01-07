@@ -79,7 +79,7 @@ int main() {
         case 3:
             {
                 std::set<std::string> categoriiTen;
-                for (auto p: magazin.getToate())
+                for (const auto* p: magazin.getToate())
                 {
                     if (const Skincare* s = dynamic_cast<const Skincare*>(p))
                     {
