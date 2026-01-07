@@ -103,7 +103,7 @@ int main() {
     for (int cod: logCoduri.getToate()) std::cout<<cod<<" ";
     fTastatura.close();
 
-    for (auto p: magazin.getToate()) delete p;
+    for (const auto* p: magazin.getToate()) delete p;
     magazin.curata();
 
     return 0;
