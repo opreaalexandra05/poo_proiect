@@ -9,7 +9,7 @@ int main() {
     Gestiune<ProdusCosmetic*> magazin;
     Gestiune<int> logCoduri;
 
-    MagazinManager* manager = MagazinManager::getInstanta();
+    const MagazinManager* manager = MagazinManager::getInstanta();
     std::cout<<"[SISTEM] Obiecte inregistrate initial: "<< ProdusCosmetic::getNrTotalProduse() << "\n";
 
     std::ifstream fStoc("produse_stoc.txt");
