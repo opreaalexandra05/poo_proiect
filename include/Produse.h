@@ -19,18 +19,11 @@ public:
 
     static int getNrTotalProduse();
 
-    const std::string& getNume() const
-    {
-        return nume;
-    }
-    float getPret() const
-    {
-        return pret;
-    }
+    const std::string& getNume() const;
+    float getPret() const;
 
     virtual void afisare(std::ostream& os) const;
     virtual void aplica() const = 0;
-
 
 };
 
@@ -41,9 +34,8 @@ protected:
 
 public:
     Skincare(const std::string& nume, float pret, const std::string& ten);
-    void aplica() const override = 0;
     void afisare(std::ostream& os) const override;
-    const std::string& getTipTen() const { return  tipTen; }
+    const std::string& getTipTen() const;
 };
 
 class Crema : public Skincare
@@ -59,10 +51,7 @@ public:
 class ProdusFactory
 {
 public:
-    static ProdusCosmetic* creeazaCrema(const std::string& nume, float pret, const std::string& ten, float spf)
-    {
-       return new Crema(nume, pret, ten, spf);
-    }
+    static ProdusCosmetic* creeazaCrema(const std::string& nume, float pret, const std::string& ten, float spf);
 };
 
 std::ostream& operator<<(std::ostream& os, const ProdusCosmetic& p);

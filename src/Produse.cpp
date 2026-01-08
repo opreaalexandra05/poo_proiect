@@ -29,7 +29,14 @@ int ProdusCosmetic::getNrTotalProduse()
 {
     return nrTotalProduse;
 }
-
+const std::string& ProdusCosmetic::getNume() const
+{
+    return nume;
+}
+float ProdusCosmetic::getPret() const
+{
+    return pret;
+}
 void ProdusCosmetic::afisare(std::ostream& os) const
 {
     os<<"Produs: "<<nume<<"| Pret:"<<pret<<" RON"<<std::endl;
@@ -41,6 +48,11 @@ void Skincare::afisare(std::ostream& os) const
 {
     ProdusCosmetic::afisare(os);
     os<<" | Tip Ten:"<<tipTen<<std::endl;
+}
+
+const std::string& Skincare::getTipTen() const
+{
+    return tipTen;
 }
 
 Crema:: Crema(const std::string& nume, float pret, const std::string& ten, float spf): Skincare(nume, pret, ten), spf(spf){}
@@ -55,7 +67,10 @@ void Crema::afisare(std::ostream& os) const
     Skincare::afisare(os);
     os<< " | SPF: "<< spf<<std::endl;
 }
-
+ProdusCosmetic* ProdusFactory::creeazaCrema(const std:: string& n, float p, const std::string& t, float spf )
+{
+   return new Crema(n, p, t, spf);
+}
 std::ostream& operator<<(std::ostream& os, const ProdusCosmetic& p)
 {
     p.afisare(os);

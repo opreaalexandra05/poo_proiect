@@ -5,7 +5,6 @@
 #include "Persoana.h"
 #include "Gestiune.h"
 
-MagazinManager* MagazinManager::instanta = nullptr;
 int main() {
     Gestiune<ProdusCosmetic*> magazin;
     Gestiune<int> logCoduri;
@@ -90,8 +89,8 @@ int main() {
                 for (const auto& t: categoriiTen) std::cout<<"["<<t<<"]";
                 std::cout<<"\n";
 
-                int nr= magazin.numaraProduseCuProtectie(10.0);
-                std::cout<<"\n Produse peste 10 RON: "<<nr<<"\n";
+                int nrScumpe= magazin.numaraElementeScumpe(10.0);
+                std::cout<<"\n Produse cu pret peste 10 RON: "<<nrScumpe<<"\n";
             }
             break;
         case 0:

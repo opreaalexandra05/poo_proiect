@@ -2,26 +2,19 @@
 #define PERSOANA_H
 
 #include <string>
-#include <vector>
 #include <iostream>
 #include <exception>
 
 class ErroareMagazin: public std::exception
 {
 public:
-    virtual const char* what() const throw() override
-    {
-        return "Eroare generala magazin!";
-    }
+    virtual const char* what() const throw() override;
 };
 
 class ErroareBuget: public ErroareMagazin
 {
 public:
-    const char* what() const throw() override
-    {
-        return "Fonduri insuficiente in contul clientului!";
-    }
+    const char* what() const throw() override;
 };
 
 class Persoana
@@ -29,13 +22,10 @@ class Persoana
 protected:
     std::string nume;
 public:
-    Persoana(const std::string& n): nume(n) {}
-    virtual ~Persoana(){}
-    const std::string& getNume() const
-    {
-        return nume;
-    }
+    Persoana(const std::string& n);
+    virtual ~Persoana();
     virtual void afiseazaRol() const = 0;
+    const std::string& getNume() const;
 };
 
 class Client: public Persoana
@@ -43,26 +33,14 @@ class Client: public Persoana
 private:
     float buget;
 public:
-    Client(const std::string& n, float b): Persoana(n), buget(b){}
-    void afiseazaRol() const override {std::cout <<"Rol: Client | Nume: "<<nume<<"\n";}
-    float getBuget() const
-    {
-        return buget;
-    }
+    Client(const std::string& n, float b);
+    void afiseazaRol() const override;
+    float getBuget() const;
 
-    Client& operator -=(float suma)
-    {
-        if (suma>buget) throw ErroareBuget();
-        buget-=suma;
-        return *this;
-    }
+    Client& operator -=(float suma);
 
-    friend std::istream& operator >>(std::istream& is, Client& c)
-    {
-        is>>c.nume;
-        is>>c.buget;
-        return is;
-    }
+    friend std::istream& operator >>(std::istream& is, Client& c);
+
 };
 
 float operator+(const Client& c, float bonus);
