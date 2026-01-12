@@ -67,7 +67,7 @@ void Crema::afisare(std::ostream& os) const
     Skincare::afisare(os);
     os<< " | SPF: "<< spf<<std::endl;
 }
-ProdusCosmetic* ProdusFactory::creeazaCrema(const std:: string& n, float p, const std::string& t, float spf )
+ProdusCosmetic* ProdusFactory::creeazaCrema(const std:: string& n, float p, const std::string& t, float spf )   //creeaza obiecte fara a sti tipul concret in main, pot sa creez un produs nou fara sa afectez codul
 {
    return new Crema(n, p, t, spf);
 }

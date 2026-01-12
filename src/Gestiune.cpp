@@ -5,11 +5,11 @@
 MagazinManager* MagazinManager::instanta = nullptr;
 
 template<>
-void Gestiune<ProdusCosmetic*>::curata()
+void Gestiune<ProdusCosmetic*>::curata()         //sterge fiecare produs din memorie=> evit memory leak; auto isi da seama singur de ce tip de obiect e=> cod mai curat si eficient
 {
     for (auto p: lista)
     {
-        delete p;
+        delete p;  // eliberam memoria alocata dinamic (heap)
     }
     lista.clear();
 }
